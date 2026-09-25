@@ -6,6 +6,22 @@ app = Flask(__name__)
 TOTAL_SLOTS = 5
 parked_cars = {}
 
+STYLE = '''
+<style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 60px auto; padding: 0 20px; color: #222; }
+    h1 { color: #1a5c1a; }
+    nav a { margin-right: 15px; text-decoration: none; color: #1a5c1a; font-weight: bold; }
+    input, button { padding: 8px; font-size: 1em; margin-top: 8px; }
+    button { background: #1a5c1a; color: white; border: none; cursor: pointer; border-radius: 4px; }
+    p { background: #f4f4f4; padding: 10px; border-radius: 4px; }
+</style>
+<nav>
+    <a href="/">Home</a>
+    <a href="/park">Park</a>
+    <a href="/remove">Remove</a>
+</nav>
+'''
+
 def calculate_fee(hours):
     if hours < 0:
         raise ValueError("Parking duration cannot be negative")
@@ -22,7 +38,7 @@ def calculate_fee(hours):
 
 @app.route("/")
 def home():
-    return f"<h1>Parking System</h1><p>Available slots: {TOTAL_SLOTS - len(parked_cars)}</p><p>Parked cars: {parked_cars}</p>"
+    return f"{STYLE}<h1>Parking System</h1><p>Available slots: {TOTAL_SLOTS - len(parked_cars)}</p><p>Parked cars: {parked_cars}</p>"
 
 @app.route("/park", methods=["GET", "POST"])
 def park():
@@ -33,7 +49,8 @@ def park():
             return f"<p>Vehicle {plate} parked successfully.</p>"
         else:
             return "<p>Parking Slots full. Try again later.</p>"
-    return '''
+    return f'''
+	{STYLE}
         <h1>Park a car</h1>
         <form method="POST">
             <input type="text" name="plate" placeholder="Enter plate number">
@@ -55,7 +72,8 @@ def remove():
             return f"<p>Vehicle {plate} parked for {hours_parked:.2f} hours. Fee: {fee}</p>"
         else:
             return "<p>Vehicle not found</p>"
-    return '''
+    return f'''
+	{STYLE}
         <h1>Remove a car</h1>
         <form method="POST">
             <input type="text" name="plate" placeholder="Enter plate number">
